@@ -13,6 +13,10 @@
         <link rel="canonical" href="https://chopratejas.github.io/headroom/integration-guide/">
       
       
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../langchain/">
       
       
         
@@ -297,11 +301,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../langchain/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -810,26 +816,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -847,7 +858,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -857,6 +868,275 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pick-your-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pick Your Path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compress-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        compress() Function
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="compress() Function">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-anthropic-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With Anthropic SDK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-openai-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With OpenAI SDK
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-litellm-direct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With LiteLLM (direct)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-any-http-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With any HTTP client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-compress-returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What compress() returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#litellm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LiteLLM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LiteLLM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-litellm-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With LiteLLM Proxy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asgi-middleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ASGI Middleware
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proxy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proxy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#with-cloud-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With Cloud Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agno" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agno
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#langchain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LangChain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compression-hooks-advanced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compression Hooks (Advanced)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
             
               
                 
@@ -901,6 +1181,62 @@
     
   
     Agno
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Tools
   
 
     
@@ -1916,9 +2252,7 @@
 <p>See <a href="../agno/">Agno Guide</a> for hooks, multi-provider, and streaming.</p>
 <hr />
 <h2 id="langchain">LangChain<a class="headerlink" href="#langchain" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p><strong>Experimental.</strong> Core compression works. Streaming callbacks and async chains are still being tested.</p>
-</blockquote>
+<p>Full integration with LangChain — chat models, memory, retrievers, tool wrappers, and streaming.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">headroom.integrations</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeadroomChatModel</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
@@ -1957,7 +2291,7 @@ Headroom stores originals in CCR (Compress-Cache-Retrieve). The LLM can call <co
 <p><strong>Q: Does it work with streaming?</strong>
 Yes. Compression happens before the request is sent. Streaming responses are unaffected.</p>
 <p><strong>Q: How much latency does it add?</strong>
-1-5ms for compression. The token savings typically save more time on the LLM side than compression adds.</p>
+15-200ms depending on content size and type. Small JSON arrays take ~15ms, large tool outputs take 100-200ms. The token savings typically save far more time on the LLM side than compression adds — a 50% token reduction on a Sonnet call saves seconds of generation time. See <a href="../LATENCY_BENCHMARKS/">Latency Benchmarks</a> for real numbers.</p>
 
 
 
