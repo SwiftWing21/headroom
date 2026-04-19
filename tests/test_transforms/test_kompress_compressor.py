@@ -357,3 +357,67 @@ class TestUnloadKompressModel:
 
         # Should return False when no model is loaded
         assert unload_kompress_model() is False
+
+
+# ── Backend selection (HEADROOM_KOMPRESS_BACKEND + auto-detect) ────────
+
+
+class TestBackendSelection:
+    """Tests for ``_load_kompress`` dispatcher: env override + auto-detect."""
+
+    def _clear_cache(self) -> None:
+        """Clear the module-level cache so each test exercises selection."""
+        from headroom.transforms import kompress_compressor as kc
+
+        kc._kompress_cache.clear()
+
+    def test_env_var_onnx_overrides_accelerator_preference(self, monkeypatch) -> None:
+        """Even with CUDA available, HEADROOM_KOMPRESS_BACKEND=onnx wins."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.setenv("HEADROOM_KOMPRESS_BACKEND", "onnx")
+
+        # Fake a world where auto-mode would otherwise pick PyTorch.
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = True
+        fake_torch.backends.mps.is_available.return_value = False
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+        pytorch_sentinel = (MagicMock(), MagicMock(), "pytorch")
+
+        import sys
+
+        with patch.object(
+            kc, "_is_pytorch_available", return_value=True
+        ), patch.dict(sys.modules, {"torch": fake_torch}), patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx, patch.object(
+            kc, "_load_kompress_pytorch", return_value=pytorch_sentinel
+        ) as mock_pytorch:
+            result = kc._load_kompress("test-model-onnx-override")
+
+        assert result == onnx_sentinel
+        mock_onnx.assert_called_once()
+        mock_pytorch.assert_not_called()
+
+    def test_env_var_pytorch_forces_pytorch(self, monkeypatch) -> None:
+        """HEADROOM_KOMPRESS_BACKEND=pytorch skips ONNX even when onnxruntime is available."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.setenv("HEADROOM_KOMPRESS_BACKEND", "pytorch")
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+        pytorch_sentinel = (MagicMock(), MagicMock(), "pytorch")
+
+        with patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx, patch.object(
+            kc, "_load_kompress_pytorch", return_value=pytorch_sentinel
+        ) as mock_pytorch:
+            result = kc._load_kompress("test-model-pytorch")
+
+        assert result == pytorch_sentinel
+        mock_pytorch.assert_called_once()
+        mock_onnx.assert_not_called()
