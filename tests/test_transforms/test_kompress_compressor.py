@@ -419,3 +419,137 @@ class TestBackendSelection:
         assert result == pytorch_sentinel
         mock_pytorch.assert_called_once()
         mock_onnx.assert_not_called()
+
+    def test_auto_apple_silicon_with_mps_prefers_pytorch(self, monkeypatch) -> None:
+        """On Apple Silicon with MPS available, auto mode picks PyTorch."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.delenv("HEADROOM_KOMPRESS_BACKEND", raising=False)
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+        pytorch_sentinel = (MagicMock(), MagicMock(), "pytorch")
+
+        # Fake Apple Silicon + MPS
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = False
+        fake_torch.backends.mps.is_available.return_value = True
+
+        import sys
+
+        with patch.object(kc, "_is_pytorch_available", return_value=True), patch.dict(
+            sys.modules, {"torch": fake_torch}
+        ), patch.object(
+            kc.platform, "machine", return_value="arm64"
+        ), patch.object(
+            kc.platform, "system", return_value="Darwin"
+        ), patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx, patch.object(
+            kc, "_load_kompress_pytorch", return_value=pytorch_sentinel
+        ) as mock_pytorch:
+            result = kc._load_kompress("test-model-mps")
+
+        assert result == pytorch_sentinel
+        mock_pytorch.assert_called_once()
+        mock_onnx.assert_not_called()
+
+    def test_auto_cuda_available_prefers_pytorch(self, monkeypatch) -> None:
+        """With CUDA available (any OS), auto mode picks PyTorch."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.delenv("HEADROOM_KOMPRESS_BACKEND", raising=False)
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+        pytorch_sentinel = (MagicMock(), MagicMock(), "pytorch")
+
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = True
+        fake_torch.backends.mps.is_available.return_value = False
+
+        import sys
+
+        with patch.object(kc, "_is_pytorch_available", return_value=True), patch.dict(
+            sys.modules, {"torch": fake_torch}
+        ), patch.object(
+            kc.platform, "machine", return_value="x86_64"
+        ), patch.object(
+            kc.platform, "system", return_value="Linux"
+        ), patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx, patch.object(
+            kc, "_load_kompress_pytorch", return_value=pytorch_sentinel
+        ) as mock_pytorch:
+            result = kc._load_kompress("test-model-cuda")
+
+        assert result == pytorch_sentinel
+        mock_pytorch.assert_called_once()
+        mock_onnx.assert_not_called()
+
+    def test_auto_no_accelerator_picks_onnx(self, monkeypatch) -> None:
+        """Without CUDA or MPS, auto mode preserves legacy ONNX-first behavior."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.delenv("HEADROOM_KOMPRESS_BACKEND", raising=False)
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+        pytorch_sentinel = (MagicMock(), MagicMock(), "pytorch")
+
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = False
+        fake_torch.backends.mps.is_available.return_value = False
+
+        import sys
+
+        with patch.object(kc, "_is_pytorch_available", return_value=True), patch.object(
+            kc, "_is_onnx_available", return_value=True
+        ), patch.dict(sys.modules, {"torch": fake_torch}), patch.object(
+            kc.platform, "machine", return_value="x86_64"
+        ), patch.object(
+            kc.platform, "system", return_value="Linux"
+        ), patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx, patch.object(
+            kc, "_load_kompress_pytorch", return_value=pytorch_sentinel
+        ) as mock_pytorch:
+            result = kc._load_kompress("test-model-cpu")
+
+        assert result == onnx_sentinel
+        mock_onnx.assert_called_once()
+        mock_pytorch.assert_not_called()
+
+    def test_auto_pytorch_load_failure_falls_back_to_onnx(self, monkeypatch) -> None:
+        """If preferred PyTorch path raises, auto mode falls back to ONNX."""
+        from headroom.transforms import kompress_compressor as kc
+
+        self._clear_cache()
+        monkeypatch.delenv("HEADROOM_KOMPRESS_BACKEND", raising=False)
+
+        onnx_sentinel = (MagicMock(), MagicMock(), "onnx")
+
+        fake_torch = MagicMock()
+        fake_torch.cuda.is_available.return_value = True  # would prefer pytorch
+        fake_torch.backends.mps.is_available.return_value = False
+
+        import sys
+
+        with patch.object(kc, "_is_pytorch_available", return_value=True), patch.object(
+            kc, "_is_onnx_available", return_value=True
+        ), patch.dict(sys.modules, {"torch": fake_torch}), patch.object(
+            kc.platform, "machine", return_value="x86_64"
+        ), patch.object(
+            kc.platform, "system", return_value="Linux"
+        ), patch.object(
+            kc,
+            "_load_kompress_pytorch",
+            side_effect=RuntimeError("simulated CUDA OOM"),
+        ) as mock_pytorch, patch.object(
+            kc, "_load_kompress_onnx", return_value=onnx_sentinel
+        ) as mock_onnx:
+            result = kc._load_kompress("test-model-fallback")
+
+        assert result == onnx_sentinel
+        mock_pytorch.assert_called_once()
+        mock_onnx.assert_called_once()
