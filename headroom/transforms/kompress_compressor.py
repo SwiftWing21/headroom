@@ -248,6 +248,13 @@ def _load_kompress(model_id: str = HF_MODEL_ID, device: str = "auto") -> tuple[A
     if backend == "pytorch":
         return _load_kompress_pytorch(model_id, device)
 
+    if backend != "auto":
+        logger.warning(
+            "Unknown HEADROOM_KOMPRESS_BACKEND=%r; falling back to auto-detect. "
+            "Valid values: auto, onnx, pytorch.",
+            backend,
+        )
+
     # Auto: prefer PyTorch only when an accelerator is actually usable.
     prefer_pytorch = False
     if _is_pytorch_available():
