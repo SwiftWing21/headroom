@@ -6,6 +6,8 @@ description: Install Headroom via pip, npm, or Docker. Includes all Python extra
 ## Python
 
 Headroom requires **Python 3.10+** and is published as `headroom-ai` on PyPI.
+Current release wheels are built for Python **3.10 through 3.13**. If your
+installer is using a newer Python, force a supported interpreter.
 
 ### Core package
 
@@ -38,6 +40,30 @@ You can combine extras:
 
 ```bash
 pip install "headroom-ai[proxy,langchain,ml]"
+```
+
+### pipx
+
+`pipx` creates one virtual environment per app. If that environment uses an
+unsupported Python version, `pipx` may resolve an older compatible Headroom
+release instead of the newest one.
+
+Use Python 3.13 explicitly:
+
+```bash
+pipx install --python python3.13 "headroom-ai[all]"
+```
+
+For a pinned release:
+
+```bash
+pipx install --python python3.13 "headroom-ai[all]==0.21.4"
+```
+
+Check which Python an existing `pipx` environment uses:
+
+```bash
+pipx list
 ```
 
 ### Verify the install
@@ -94,6 +120,10 @@ Pre-built images are published to GitHub Container Registry on every release.
 docker pull ghcr.io/chopratejas/headroom:latest
 docker run -p 8787:8787 ghcr.io/chopratejas/headroom:latest
 ```
+
+<Callout type="info" title="Running Headroom without installing Python or Node?">
+If you want a host `headroom` CLI that keeps Headroom itself inside a container — with mounted state, a one-line installer, and a persistent Docker lifecycle — see [Docker-Native Install](/docs/docker-install).
+</Callout>
 
 ### Image tags
 
